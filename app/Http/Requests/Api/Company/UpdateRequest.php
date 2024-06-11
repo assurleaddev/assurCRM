@@ -29,7 +29,7 @@ class UpdateRequest extends BaseRequest
             'name'    => 'required',
             'short_name'    => 'required',
             'email'    => 'required|email',
-            'phone'    => 'required|integer',
+            'phone'    => 'required|numeric',
             'timezone' => 'required',
             'date_format' => 'required',
             'time_format' => 'required',

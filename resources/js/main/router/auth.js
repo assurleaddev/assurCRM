@@ -16,7 +16,7 @@ export default [
         component: Verify,
         name: 'verify.main',
         meta: {
-            requireUnauth: true,
+            requireUnauth: false,
             menuKey: route => "verify_product",
         }
     },

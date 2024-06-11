@@ -78,8 +78,8 @@ export default defineComponent({
 			verifyPurchase({
 				success: (res) => {
 					router.push({ name: "admin.login" });
-				},
-			});
+				}
+            });
 
 		return {
 			rules,
