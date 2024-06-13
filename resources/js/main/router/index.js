@@ -250,6 +250,7 @@ const isAnyModuleNotVerified = () => {
             : true
     }
 router.beforeEach((_0x35c99f, _0x3f0d3f, _0x422a9f) => {
+
     var _0x3a3ac8 = 'envato',
         _0x57e4a0 = 'codeifly',
         _0x40fce5 = 'check',

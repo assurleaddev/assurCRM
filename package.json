@@ -5,6 +5,7 @@
         "build": "vite build"
     },
     "dependencies": {
+        "@jbtje/vite-vue3pdf": "^0.2.0",
         "@stripe/stripe-js": "^1.42.1",
         "@vueup/vue-quill": "^1.2.0",
         "ant-design-vue": "^4.0.0",
@@ -17,6 +18,8 @@
         "lodash-es": "^4.17.21",
         "moment": "^2.29.1",
         "papaparse": "^5.4.1",
+        "pdfjs": "^2.5.3",
+        "pdfjs-dist": "^4.3.136",
         "resolve-url-loader": "^4.0.0",
         "vue": "^3.2.20",
         "vue-chart-3": "^0.5.8",
@@ -26,6 +29,7 @@
         "vue-template-compiler": "^2.6.14",
         "vue-timer-hook": "^1.0.84",
         "vue3-colorpicker": "^2.0.4",
+        "vue3-pdf-app": "^1.0.3",
         "vue3-perfect-scrollbar": "^1.5.5",
         "vue3-print-nb": "^0.1.4",
         "vue3-styled-components": "^1.2.1",

@@ -345,6 +345,30 @@
                                                 >
                                                     {{ $t("lead.unreachable") }}
                                                 </a-select-option>
+                                                <a-select-option
+                                                    key="repondeur"
+                                                    value="repondeur"
+                                                >
+                                                    Repondeur
+                                                </a-select-option>
+                                                <a-select-option
+                                                    key="rappel"
+                                                    value="rappel"
+                                                >
+                                                    Rappel
+                                                </a-select-option>
+                                                <a-select-option
+                                                    key="devis_envoye"
+                                                    value="devis envoye"
+                                                >
+                                                    devis envoye
+                                                </a-select-option>
+                                                <a-select-option
+                                                    key="contrat_souscrit"
+                                                    value="contrat souscrit"
+                                                >
+                                                    contrat souscrit
+                                                </a-select-option>
                                             </a-select>
                                         </a-form-item>
                                     </a-col>
@@ -456,7 +480,7 @@
                                             </template>
                                             {{ $t("campaign.save_exit") }}
                                         </a-button>
-                                        <!-- <a-button
+                                        <a-button
                                             :style="{
                                                 background: '#ff4d4f',
                                                 borderColor: '#ff4d4f',
@@ -466,7 +490,7 @@
                                         >
                                             {{ $t("campaign.skip_lead") }}
                                             <DoubleRightOutlined />
-                                        </a-button> -->
+                                        </a-button>
                                     </a-space>
                                 </a-col>
                                 <a-col :xs="24" :sm="24" :md="4" :lg="4">
@@ -526,6 +550,56 @@
                             "
                         />
                     </a-tab-pane>
+                    <a-tab-pane key="lead_docs">
+                        <template #tab>
+                            <span>
+                                <FileTextOutlined />
+                                Docs
+                            </span>
+                        </template>
+                        <a-row>
+                            <a-col :xs="10" :sm="10" :md="10" :lg="10" style="margin: 20px">
+                                <a-form-item
+                                    label="permis de conduire"
+                                    name="permis_de_conduire"
+                                >
+                                </a-form-item>
+                                <div class="pdf-content">
+                                    <div v-if="permisPdf">
+                                        <PdfApp :config="{toolbar: false,}"
+                                                page-scale="40"
+                                                :page-number="1"
+                                                style="height: 465px"
+                                                :pdf="permisPdf" ></PdfApp>
+                                    </div>
+                                    <div v-else>
+                                        <input type="file" @change="handlePermisFileChange" accept="application/pdf" />
+                                    </div>
+                                </div>
+                            </a-col>
+                            <a-col :xs="10" :sm="10" :md="10" :lg="10" style="margin: 20px">
+                                <a-form-item
+                                    label="carte grise"
+                                    name="carte_grise"
+                                >
+                                </a-form-item>
+                                <div class="pdf-content">
+
+
+                                    <div v-if="cartGrisePdf">
+                                        <PdfApp :config="{toolbar: false,}"
+                                                page-scale="40"
+                                                :page-number="1"
+                                                style="height: 465px"
+                                                :pdf="cartGrisePdf" ></PdfApp>
+                                    </div>
+                                    <div v-else>
+                                        <input type="file" @change="handleCartGriseFileChange" accept="application/pdf" />
+                                    </div>
+                                </div>
+                            </a-col>
+                        </a-row>
+                    </a-tab-pane>
                 </a-tabs>
             </a-card>
         </a-col>
@@ -563,6 +637,8 @@
 
 <script>
 import { onMounted, ref, createVNode, watch } from "vue";
+import PdfApp from "vue3-pdf-app";
+import "vue3-pdf-app/dist/icons/main.css";
 import {
     SaveOutlined,
     DoubleRightOutlined,
@@ -594,9 +670,12 @@ import LogTimeline from "../../components/lead-logs/LogTimeline.vue";
 import LeadNotesTable from "../../components/lead-notes/index.vue";
 import SkipLeadModal from "./SkipLeadModal.vue";
 import SendMail from "./SendMail.vue";
+import Upload from "@/common/core/ui/file/Upload.vue";
 
 export default {
     components: {
+        PdfApp,
+        Upload,
         SaveOutlined,
         DoubleRightOutlined,
         ArrowRightOutlined,
@@ -619,8 +698,10 @@ export default {
         LogTimeline,
         SkipLeadModal,
         SendMail,
+
     },
     setup() {
+        const formData = ref({});
         const { formatDateTime } = common();
         const { addEditRequestAdmin, loading, rules } = apiAdmin();
         const route = useRoute();
@@ -644,11 +725,31 @@ export default {
         const saveLoading = ref(false);
         const saveExitLoading = ref(false);
         const showSkipModal = ref(false);
-
+        const permisPdf  = ref(null)
+        const cartGrisePdf  = ref(null)
         onMounted(() => {
             fetchInitData();
         });
-
+        const handlePermisFileChange = (event) => {
+            const file = event.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    permisPdf.value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        const handleCartGriseFileChange = (event) => {
+            const file = event.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    cartGrisePdf.value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
         const fetchInitData = () => {
             const leadId = route.params.id;
             const campaignUrl =
@@ -724,6 +825,7 @@ export default {
                     salesmanBooking.value = leadResult.salesman_booking
                         ? leadResult.salesman_booking
                         : [];
+
                     leadStatus.value = leadResult.lead_status;
 
                     timer.reset(leadResult.time_taken, true);
@@ -942,6 +1044,8 @@ export default {
             salesmanBooking,
             loading,
             rules,
+            cartGrisePdf,
+            permisPdf,
 
             formatDateTime,
             timer,
@@ -957,7 +1061,8 @@ export default {
             saveExitLoading,
             saveLoading,
             autoSaved,
-
+            handleCartGriseFileChange,
+            handlePermisFileChange,
             skipLead,
             showSkipModal,
             skipDeleteSuccess,

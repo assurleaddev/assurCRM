@@ -583,4 +583,9 @@ class AuthController extends ApiBaseController
             ]
         ]);
     }
+
+    public function checkTokenValidity()
+    {
+
+    }
 }
